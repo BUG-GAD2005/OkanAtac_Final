@@ -8,8 +8,9 @@ public class GridManager : MonoBehaviour
 
     void Start()
     {
+        RemoveChildren();
         // change aspect wrto screen size, 1080p
-        Camera.main.aspect = 1920f / 1080f; 
+        Camera.main.aspect = 1920f / 1080f;
         GenerateGrid();
     }
 
@@ -32,14 +33,11 @@ public class GridManager : MonoBehaviour
         float scaledCellWidth = cellSize.x * scaleFactor;
         float scaledCellHeight = cellSize.y * scaleFactor;
        
-
         float spacingX = scaledCellWidth; 
         float spacingY = scaledCellHeight;
 
         float startX = -(gridWidth / 2f) + (scaledCellWidth / 2f);
         float startY = (gridHeight / 2f) - (scaledCellHeight / 2f);
-
-        Debug.Log(startX);
 
         for (int row = 0; row < numRows; row++)
         {   
@@ -54,14 +52,20 @@ public class GridManager : MonoBehaviour
                 position.x += startX + rightAlignOffset;
                 position.y -= startY;
 
-
-                // Instantiate a cell GameObject at the calculated position
                 GameObject cell = Instantiate(cellPrefab, position, Quaternion.identity);
 
-                // Set the parent of the cell GameObject to the grid container
                 cell.transform.SetParent(transform);
 
             }
         }
     }
+    
+    void RemoveChildren()
+	{
+		int childCount = this.transform.childCount;
+		for (int i = childCount - 1; i >= 0; --i)
+		{
+			GameObject.Destroy(this.transform.GetChild(i).gameObject);
+		}
+	}
 }
