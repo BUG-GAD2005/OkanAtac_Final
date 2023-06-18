@@ -6,11 +6,10 @@ public class ResourcePanelUpdater : MonoBehaviour
     public Text goldText;
     public Text gemsText;
 
-    private PlayerData playerData;
+    [SerializeField] PlayerData playerData;
 
     private void Start()
     {
-        playerData = FindObjectOfType<PlayerData>();
         UpdateResourceTexts();
     }
 
@@ -25,9 +24,9 @@ public class ResourcePanelUpdater : MonoBehaviour
         gemsText.text = playerData.gems.ToString();
     }
 
-    // Call this method whenever the player's resources change
+    /* Call this method whenever the player's resources change
     public void OnResourceChange()
     {
         UpdateResourceTexts();
-    }
+    }*/
 }

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6294699447434996655}
   - component: {fileID: 4875895631758116820}
   m_Layer: 0
-  m_Name: tile-building
+  m_Name: GridCellFull
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
