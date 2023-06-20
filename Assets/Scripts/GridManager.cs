@@ -6,10 +6,7 @@ public class GridManager : MonoBehaviour
     const int numColumns = 10;
     public GameObject cellPrefab;
 
-    void Start()
-    {
-        RemoveChildren();
-        // Calculate the aspect ratio based on the screen dimensions
+    void Awake(){
         float aspectRatio = (float)Screen.width / Screen.height;
         Camera.main.aspect = aspectRatio;
         GenerateGrid();

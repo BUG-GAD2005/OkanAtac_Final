@@ -1,13 +1,41 @@
+using System;
 using UnityEngine;
+
 public class BuildingManager : MonoBehaviour
 {
-    public Building[] buildings;
-    [SerializeField] PlayerData playerData;
+    [SerializeField] public Building[] buildings;
+    [SerializeField] private PlayerData playerData;
+    [SerializeField] private SaveManager saveManager;
+
+
     void Start()
     {
         InitializeCostsUI();
         InitializeNameUI();
         InitializeEarnUI();
+    }
+
+
+    private void OnApplicationQuit() {
+        saveManager.SaveGame();
+    }
+
+
+
+    void Update()
+    {
+        for(int i = 0; i < buildings.Length; i++)
+        {
+           // check resources
+            if(!playerData.checkResources(buildings[i].gemCost, buildings[i].goldCost))
+            {
+                buildings[i].buildingSprite.color = Color.red;
+            }
+            else
+            {
+                buildings[i].buildingSprite.color = Color.white;
+            }
+        }
     }
 
     void InitializeCostsUI()
@@ -32,22 +60,6 @@ public class BuildingManager : MonoBehaviour
         foreach (Building building in buildings)
         {
             building.buildingNameText.text = building.buildingName;
-        }
-    }
-
-    void Update()
-    {
-        for(int i = 0; i < buildings.Length; i++)
-        {
-           // check resources
-            if(!playerData.checkResources(buildings[i].gemCost, buildings[i].goldCost))
-            {
-                buildings[i].buildingSprite.color = Color.red;
-            }
-            else
-            {
-                buildings[i].buildingSprite.color = Color.white;
-            }
         }
     }
 }

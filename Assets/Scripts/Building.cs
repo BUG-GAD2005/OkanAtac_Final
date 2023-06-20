@@ -22,7 +22,7 @@ public class Building : MonoBehaviour
     private Vector2 startPosition;
     private bool isDragging = false;
 
-    private void Update()
+    public void Update()
     {
         if (isDragging)
         {

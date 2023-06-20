@@ -5,8 +5,7 @@ public class ResourcePanelUpdater : MonoBehaviour
 {
     public Text goldText;
     public Text gemsText;
-
-    [SerializeField] PlayerData playerData;
+    [SerializeField] private PlayerData playerData;
 
     private void Start()
     {
