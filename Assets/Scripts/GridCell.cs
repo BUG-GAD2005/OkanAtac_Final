@@ -18,7 +18,7 @@ public class GridCell : MonoBehaviour
         Building = buildingInstance;
     }
 
-    public void HighlightCell()
+    public void HighlightCellGreen()
     {
         cellSpriteRenderer.color = Color.green;
     }
@@ -26,6 +26,11 @@ public class GridCell : MonoBehaviour
     public void HighlightCellOccupied()
     {
         cellSpriteRenderer.sprite = Resources.Load<Sprite>("Assets/Imported/tile-building.png");
+    }
+
+    public void ResetCellColor()
+    {
+        cellSpriteRenderer.color = Color.white;
     }
 
     public bool CanOccupyCell()
@@ -40,11 +45,6 @@ public class GridCell : MonoBehaviour
         cellSpriteRenderer.color = Color.white;
     }
 
-    public void ResetCellColor()
-    {
-        cellSpriteRenderer.color = Color.white;
-    }
-
     public static  void HighlightAll()
     {
         GridCell[] cells = FindObjectsOfType<GridCell>();
@@ -54,14 +54,14 @@ public class GridCell : MonoBehaviour
             {
                 cell.HighlightCellOccupied();
             } 
-            else 
+            else
             {
-                cell.HighlightCell();
+                cell.HighlightCellGreen();
             }
         }
     }
 
-    public static void ResetAll()
+    public static void ResetAllColor()
     {
         GridCell[] cells = FindObjectsOfType<GridCell>();
         foreach(GridCell cell in cells)
@@ -76,7 +76,7 @@ public class GridCell : MonoBehaviour
         int count = 0;
         foreach(GridCell cell in cells)
         {
-            if (cell.IsOccupied && cell.Building.BuildingName == name)
+            if (cell.IsOccupied && cell.Building.buildingName == name)
             {
                 count++;
             }

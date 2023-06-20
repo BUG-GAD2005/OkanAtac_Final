@@ -21,7 +21,6 @@ public class PlayerData : MonoBehaviour
             gold -= goldAmount;
             gems -= gemsAmount;
 
-            // Trigger resource change events
             OnGoldChange?.Invoke(gold);
             OnGemsChange?.Invoke(gems);
             return true;

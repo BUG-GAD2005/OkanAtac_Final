@@ -1,31 +1,26 @@
 using System.Collections;
-
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Building : MonoBehaviour
 {
-    [SerializeField] private string buildingName;
-    public string BuildingName => buildingName;
-    [SerializeField] private int gemCost;
-    public int GemCost => gemCost;
-    [SerializeField] private Text gemCostText;
-    public Text GemCostText => gemCostText;
-    [SerializeField] private int goldCost;
-    public int GoldCost => goldCost;
-    [SerializeField] private Text goldCostText;
-    public Text GoldCostText => goldCostText;
-    [SerializeField] private int goldEarn;
-    public int GoldEarn => goldEarn;
-    [SerializeField] private int gemEarn;
-    public int GemEarn => gemEarn;
-    [SerializeField] private float earnDuration;
-    public float EarnDuration => earnDuration;
-    [SerializeField] public SpriteRenderer buildingSprite;
-    [SerializeField] private GameObject buildingShape;
+    public string buildingName;
+    public Text buildingNameText;
+    public int gemCost;
+    public Text gemCostText;
+    public int goldCost;
+    public Text goldCostText;
+    public int gemEarn;
+    public Text gemEarnText;
+    public int goldEarn;
+    public Text goldEarnText;
+    public float earningDuration;
+    public SpriteRenderer buildingSprite;
+    public GameObject buildingShape;
+    public PlayerData playerData;
+
     private Vector2 startPosition;
     private bool isDragging = false;
-    [SerializeField]  public PlayerData playerData;
 
     private void Update()
     {
@@ -63,7 +58,7 @@ public class Building : MonoBehaviour
                 }
                 if (cells.Length == cellIndex && cells.Length != 0)
                 {
-                    if(playerData.DeductResources(GoldCost, GemCost) == false){
+                    if(playerData.DeductResources(goldCost, gemCost) == false){
                         CancelPlacement();
                         return;
                     }
@@ -77,7 +72,7 @@ public class Building : MonoBehaviour
                     }
                     buildingShape.transform.position = new Vector2(cells[0].transform.position.x, cells[0].transform.position.y);
                     isDragging = false;              
-                    GridCell.ResetAll();
+                    GridCell.ResetAllColor();
                     StartCoroutine(EarnResources());
                     return;
                 }
@@ -89,12 +84,12 @@ public class Building : MonoBehaviour
     {
         while (true)
         {
-            float earnInterval = EarnDuration;
+            float earnInterval = earningDuration;
             yield return new WaitForSeconds(earnInterval);
 
-            int total = GridCell.GetOccupiedCardCount(BuildingName);
-            int gemEarned = GemEarn * total;
-            int goldEarned = GoldEarn * total;
+            int total = GridCell.GetOccupiedCardCount(buildingName);
+            int gemEarned = gemEarn * total;
+            int goldEarned = goldEarn * total;
 
             playerData.AddResources(goldEarned, gemEarned);
         }
@@ -119,12 +114,12 @@ public class Building : MonoBehaviour
     {
         isDragging = false;
         buildingShape.SetActive(false);
-        GridCell.ResetAll();
+        GridCell.ResetAllColor();
     }
 
     private void OnMouseDown()
     {
-        if (playerData.checkResources(GoldCost, GemCost) == false)
+        if (playerData.checkResources(goldCost, gemCost) == false)
         {
             return;
         }
