@@ -11,22 +11,49 @@ public class ResourcePanelUpdater : MonoBehaviour
     private void Start()
     {
         UpdateResourceTexts();
+        SubscribeToEvents();
     }
 
-    private void Update()
+    private void OnDestroy()
     {
-        UpdateResourceTexts();
+        UnsubscribeFromEvents();
+    }
+
+    private void SubscribeToEvents()
+    {
+        if (playerData != null)
+        {
+            playerData.OnGoldChange += HandleGoldChange;
+            playerData.OnGemsChange += HandleGemsChange;
+        }
+    }
+
+    private void UnsubscribeFromEvents()
+    {
+        if (playerData != null)
+        {
+            playerData.OnGoldChange -= HandleGoldChange;
+            playerData.OnGemsChange -= HandleGemsChange;
+        }
+    }
+
+    private void HandleGoldChange(int newGoldAmount)
+    {
+        goldText.text = newGoldAmount.ToString();
+    }
+
+    private void HandleGemsChange(int newGemsAmount)
+    {
+        gemsText.text = newGemsAmount.ToString();
     }
 
     private void UpdateResourceTexts()
     {
-        goldText.text = playerData.gold.ToString();
-        gemsText.text = playerData.gems.ToString();
+        if (playerData != null)
+        {
+            goldText.text = playerData.gold.ToString();
+            gemsText.text = playerData.gems.ToString();
+        }
     }
 
-    /* Call this method whenever the player's resources change
-    public void OnResourceChange()
-    {
-        UpdateResourceTexts();
-    }*/
 }

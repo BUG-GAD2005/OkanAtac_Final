@@ -1,60 +1,86 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class GridCell : MonoBehaviour
 {
-    //public bool isHighlighted;
-    [HideInInspector] public bool isOccupied;
-    [HideInInspector] public bool isHighlightedRed;
-    [HideInInspector] public bool isHighlightedGreen;
-    [HideInInspector] public Building building;
+    public bool IsOccupied { get; private set; }
+    public Building Building { get; private set; }
+    private SpriteRenderer cellSpriteRenderer;
 
-    void Start()
+    private void Awake()
     {
-        isOccupied = false;
-        isHighlightedRed = false;
-        isHighlightedGreen = false;
-    }
-     
-    public void occupyCell(Building buildingInstance)
-    {
-        isOccupied = true;
-        building = buildingInstance;
+        cellSpriteRenderer = GetComponent<SpriteRenderer>();
+        ResetCellState();
     }
 
-    public void highlightCell(RaycastHit2D hit)
+    public void OccupyCell(Building buildingInstance)
     {
-        if (isOccupied)
+        IsOccupied = true;
+        Building = buildingInstance;
+    }
+
+    public void HighlightCell()
+    {
+        cellSpriteRenderer.color = Color.green;
+    }
+
+    public void HighlightCellOccupied()
+    {
+        cellSpriteRenderer.sprite = Resources.Load<Sprite>("Assets/Imported/tile-building.png");
+    }
+
+    public bool CanOccupyCell()
+    {
+        return !IsOccupied;
+    }
+
+    public void ResetCellState()
+    {
+        IsOccupied = false;
+        Building = null;
+        cellSpriteRenderer.color = Color.white;
+    }
+
+    public void ResetCellColor()
+    {
+        cellSpriteRenderer.color = Color.white;
+    }
+
+    public static  void HighlightAll()
+    {
+        GridCell[] cells = FindObjectsOfType<GridCell>();
+        foreach(GridCell cell in cells)
         {
-            hit.collider.gameObject.GetComponent<SpriteRenderer>().color = Color.red;
-            isHighlightedRed = true;
-        }
-        else
-        {
-            hit.collider.gameObject.GetComponent<SpriteRenderer>().color = Color.green;
-            isHighlightedGreen = true;
+            if (cell.IsOccupied)
+            {
+                cell.HighlightCellOccupied();
+            } 
+            else 
+            {
+                cell.HighlightCell();
+            }
         }
     }
 
-    public void unhighlightCell()
+    public static void ResetAll()
     {
-        if (isHighlightedRed)
+        GridCell[] cells = FindObjectsOfType<GridCell>();
+        foreach(GridCell cell in cells)
         {
-            building.buildingSprite.color = Color.red;
-            isHighlightedRed = false;
-        }
-        else if (isHighlightedGreen)
-        {
-            building.buildingSprite.color = Color.green;
-            isHighlightedGreen = false;
+            cell.ResetCellColor();
         }
     }
 
-    public bool canOccupyCell()
+    public static int GetOccupiedCardCount(string name)
     {
-        return !isOccupied;
+        GridCell[] cells = FindObjectsOfType<GridCell>();
+        int count = 0;
+        foreach(GridCell cell in cells)
+        {
+            if (cell.IsOccupied && cell.Building.BuildingName == name)
+            {
+                count++;
+            }
+        }
+        return count;
     }
-
 }

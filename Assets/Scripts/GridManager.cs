@@ -9,8 +9,9 @@ public class GridManager : MonoBehaviour
     void Start()
     {
         RemoveChildren();
-        // change aspect wrto screen size, 1080p
-        Camera.main.aspect = 1920f / 1080f;
+        // Calculate the aspect ratio based on the screen dimensions
+        float aspectRatio = (float)Screen.width / Screen.height;
+        Camera.main.aspect = aspectRatio;
         GenerateGrid();
     }
 
@@ -43,11 +44,12 @@ public class GridManager : MonoBehaviour
             {
                 // Calculate the position of each cell based on row and column values
                 Vector2 position = new Vector2(col * spacingX, row * spacingY);
-                float rightAlignOffset = (Camera.main.orthographicSize / 2f * Camera.main.aspect) - (scaledCellWidth / 2f);            
+                float rightAlignOffset = (Camera.main.orthographicSize / 2f * Camera.main.aspect) - (scaledCellWidth / 2f);    
                 // Apply the starting offset
                 position.x += startX + rightAlignOffset;
                 position.y -= startY;
                 GameObject cell = Instantiate(cellPrefab, position, Quaternion.identity);
+                // add box collider to each cell
                 cell.transform.SetParent(transform);
             }
         }

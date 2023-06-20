@@ -1,9 +1,12 @@
 using UnityEngine;
+using System;
 
 public class PlayerData : MonoBehaviour
 {
     public int gold;
     public int gems;
+    public event Action<int> OnGoldChange;
+    public event Action<int> OnGemsChange;
 
     public void Initialize(int initialGold, int initialGems)
     {
@@ -17,9 +20,12 @@ public class PlayerData : MonoBehaviour
         {
             gold -= goldAmount;
             gems -= gemsAmount;
+
+            // Trigger resource change events
+            OnGoldChange?.Invoke(gold);
+            OnGemsChange?.Invoke(gems);
             return true;
         }
-
         return false;
     }
 
@@ -27,18 +33,15 @@ public class PlayerData : MonoBehaviour
     {
         gold += goldAmount;
         gems += gemsAmount;
+        OnGoldChange?.Invoke(gold);
+        OnGemsChange?.Invoke(gems);
     }
-
-    void DebugResources()
+    public bool checkResources(int goldAmount, int gemsAmount)
     {
-        if(Input.GetKeyDown(KeyCode.D))
-        DeductResources(2,1);
-        if(Input.GetKeyDown(KeyCode.A))
-        AddResources(2,1);
-    }
-
-    void Update()
-    {
-        DebugResources();
+        if (gold >= goldAmount && gems >= gemsAmount)
+        {
+            return true;
+        }
+        return false;
     }
 }

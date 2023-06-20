@@ -1,22 +1,37 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BuildingManager : MonoBehaviour
 {
     public Building[] buildings;
-
+    [SerializeField] PlayerData playerData;
     void Start()
     {
-        initializeCostsUI();
+        InitializeCostsUI();
     }
 
-    void initializeCostsUI()
+    void InitializeCostsUI()
     {
         foreach (Building building in buildings)
         {
-            building.gemCostText.text = building.gemCost.ToString();
-            building.goldCostText.text = building.goldCost.ToString();
+            building.GemCostText.text = building.GemCost.ToString();
+            building.GoldCostText.text = building.GoldCost.ToString();
+        }
+    }
+
+    void Update()
+    {
+        for(int i = 0; i < buildings.Length; i++)
+        {
+           // check resources
+            if(!playerData.checkResources(buildings[i].GemCost, buildings[i].GoldCost))
+            {
+                buildings[i].buildingSprite.color = Color.red;
+            }
+            else
+            {
+                buildings[i].buildingSprite.color = Color.white;
+            }
         }
     }
 }
