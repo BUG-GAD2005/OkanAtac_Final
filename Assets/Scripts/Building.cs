@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,6 +27,9 @@ public class Building : MonoBehaviour
     {
         if (isDragging)
         {
+            GridCell.ResetAllColor();
+            highlightEligible();
+            
             Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             buildingShape.transform.position = new Vector2(mousePosition.x, mousePosition.y);
 
@@ -63,20 +67,45 @@ public class Building : MonoBehaviour
                         return;
                     }
 
-                    Vector2 center = Vector2.zero;
-                    foreach (GridCell cell in cells)
-                    {
-                        center += new Vector2(cell.transform.position.x, cell.transform.position.y);
-                        cell.OccupyCell(this);
-                        cell.HighlightCellOccupied();
-                    }
-                    buildingShape.transform.position = new Vector2(cells[0].transform.position.x, cells[0].transform.position.y);
-                    isDragging = false;              
+                    placeCell(cells);
                     GridCell.ResetAllColor();
                     StartCoroutine(EarnResources());
-                    return;
                 }
             }
+        }
+    }
+
+    public void placeCell(GridCell[] cells){
+        Vector2 center = Vector2.zero;
+        foreach (GridCell cell in cells)
+        {
+            center += new Vector2(cell.transform.position.x, cell.transform.position.y);
+            cell.OccupyCell(this);
+            cell.HighlightCellOccupied();
+        }
+        buildingShape.transform.position = new Vector2(cells[0].transform.position.x, cells[0].transform.position.y);
+        isDragging = false;  
+    }
+    
+    public void highlightEligible(){
+        List<GridCell> potentialCells = GetPotentialCells();
+        bool canPlace = true;
+        foreach (GridCell gridCell in potentialCells)
+        {
+            if (!gridCell.CanOccupyCell())
+                canPlace = false;
+        }
+
+        if (buildingShape.transform.childCount != potentialCells.Count)
+            canPlace = false;
+        
+
+        foreach (GridCell gridCell in potentialCells)
+        {
+            if (canPlace)
+                gridCell.HighlightCellGreen();
+            else
+                gridCell.HighlightCellRed();
         }
     }
 
@@ -107,8 +136,30 @@ public class Building : MonoBehaviour
             startPosition = mousePosition;
 
             GridCell[] gridCells = FindObjectsOfType<GridCell>();
+
         }
     }
+
+    List<GridCell> GetPotentialCells()
+    {
+        List<GridCell> potentialCells = new List<GridCell>();
+
+        foreach (Transform child in buildingShape.transform)
+        {
+            Vector2 childPosition = new Vector2(child.position.x, child.position.y);
+            RaycastHit2D[] hits = Physics2D.RaycastAll(childPosition, Vector2.zero);
+            foreach (RaycastHit2D hit in hits)
+            {
+                if (hit.collider != null && hit.collider.CompareTag("Cell"))
+                {
+                    GridCell gridCell = hit.collider.GetComponent<GridCell>();
+                    potentialCells.Add(gridCell);
+                }
+            }
+        }
+        return potentialCells;
+    }
+
 
     public void CancelPlacement()
     {
@@ -123,7 +174,6 @@ public class Building : MonoBehaviour
         {
             return;
         }
-        GridCell.HighlightAll();
         StartDragging();
     }
 }

@@ -23,6 +23,11 @@ public class GridCell : MonoBehaviour
         cellSpriteRenderer.color = Color.green;
     }
 
+    public void HighlightCellRed()
+    {
+        cellSpriteRenderer.color = Color.red;
+    }
+
     public void HighlightCellOccupied()
     {
         cellSpriteRenderer.sprite = Resources.Load<Sprite>("Assets/Imported/tile-building.png");
