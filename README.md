@@ -6,3 +6,4 @@
 - Placement on grid
 - Grid highlighting according to building shapes
 - Resource generation
+- Restart and save
